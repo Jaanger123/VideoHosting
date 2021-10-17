@@ -2,6 +2,8 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+import redis
+import json
 
 from starlette.status import HTTP_404_NOT_FOUND
 
@@ -40,7 +42,19 @@ def get_user_by_id(db: Session, user_id: int):
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).offset(skip).limit(limit).all()
+    redis_client = redis.Redis()
+    cache = redis_client.get('users')
+    if cache:
+        redis_client.close()
+        return json.loads(cache)
+    users = []
+    for user in db.query(models.User).offset(skip).limit(limit).all():
+        user = user.__dict__
+        user.pop('_sa_instance_state')
+        users.append(user)
+    redis_client.set('users', json.dumps(users), ex=120)
+    redis_client.close()
+    return users
 
 
 async def create_user(db: Session, user: schemas.UserCreate):

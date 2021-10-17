@@ -32,7 +32,7 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return await crud.create_user(db=db, user=user)
 
 
-@app.get("/users/", response_model=List[schemas.User])
+@app.get("/users/")
 def read_users(skip: int = 0, limit: int = 100, token: str = Depends(crud.oauth2_scheme), db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
@@ -125,9 +125,9 @@ async def login(form_data: crud.OAuth2PasswordRequestForm = Depends(), db: Sessi
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get('/send-email/asynchronous')
-async def send_email_asynchronous():
-    # await send_email.send_email_async('jbarakanov@gmail.com',
-    # 'test')
-    await send_mail('jbarakanov@gmail.com', 'Successfully created')
-    return 'Success'
+# @app.get('/send-email/asynchronous')
+# async def send_email_asynchronous():
+#     # await send_email.send_email_async('jbarakanov@gmail.com',
+#     # 'test')
+#     await send_mail('jbarakanov@gmail.com', 'Successfully created')
+#     return 'Success'
