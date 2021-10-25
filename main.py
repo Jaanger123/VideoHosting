@@ -125,9 +125,9 @@ async def login(form_data: crud.OAuth2PasswordRequestForm = Depends(), db: Sessi
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-# @app.get('/send-email/asynchronous')
-# async def send_email_asynchronous():
-#     # await send_email.send_email_async('jbarakanov@gmail.com',
-#     # 'test')
-#     await send_mail('jbarakanov@gmail.com', 'Successfully created')
-#     return 'Success'
+@app.get('/send-email/asynchronous')
+async def send_email_asynchronous():
+    # await send_email.send_email_async('jbarakanov@gmail.com',
+    # 'test')
+    await send_mail('jbarakanov@gmail.com', 'Successfully created')
+    return 'Success'
